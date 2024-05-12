@@ -1,0 +1,65 @@
+<html>
+<head>
+    <script src="data.js"></script>
+</head>
+<body>
+    <div class="wrap"></div>
+    <style>
+        .option {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            border-bottom: 1px solid #ccc;
+        }
+        .option:last-of-type {
+            border-bottom: 0;
+        }
+        .option-name,.option-range {
+            flex-basis: 50%;
+        }
+        html, body {
+            line-height: 2;
+        }
+    </style>
+    <script>
+        document.body.querySelector(".wrap").innerHTML = getHtmlFromItems(itemsFromData.items);
+
+        function getHtmlFromItems(items) {
+            return items.map(e => getHtmlFromItem(e)).join(" ");
+        }
+
+        function getHtmlFromItem(item) {
+            console.log(item);
+            return `
+            <div class="item" id="item-${item.key}">
+                <h2>${item.title}</h2>
+                <div class="inner-options">${item.options.map(opt => getOptions(opt, item.key)).join(" ")}</div>
+            </div>
+            `;
+        }
+
+        function getOptions(opt, key) {
+            return `
+            <div class="option" id="option-${key}-${opt.key}">
+                <div class="option-name">
+                    <div style="font-weight: bold;">${opt.name}</div>
+                    <div style="color: #aaa;">
+                    ${opt.advantages != null && opt.advantages != "" ? "<b>Advantages: </b>" + opt.advantages + "<br>": ""}
+                    ${opt.disadvantages != null && opt.disadvantages != "" ? "<b>Disadvantages: </b>" + opt.disadvantages + "<br>": ""}
+                    ${opt.info != null && opt.info != "" ? "<b>Info: </b>" + opt.info + "<br>": ""}
+                    </div>
+                </div>
+                <div class="option-range">
+                    <input value="1" type="range" min="1" max="10" name="range-option-${key}-${opt.key}" id="range-option-${key}-${opt.key}">
+                    <span class="option-value">1</span>
+                </div>
+            </div>
+            `;
+        }
+
+        [...document.querySelectorAll(".option input")].map(ranges => ranges.addEventListener("change", (e) => {
+            e.target.closest(".option").querySelector(".option-value").innerText = e.target.value;
+        }));
+    </script>
+</body>
+</html>
